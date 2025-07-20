@@ -1,0 +1,16 @@
+no-permission: "&cYou don't have permission to use this command"
+reload: "&aSuccesfully reloaded ItemStackPlaceholderAPI"
+
+# Internal
+
+version: "%version%"
+
+no-argument:
+  - "&aItemStackPlaceholderAPI %version% by Brooke Willows"
+  - "&aUse \"/itemstackpapi help\" for a list of commands"
+invalid-argument:
+  - "&cInvalid argument, try \"/itemstackpapi help\"?"
+help:
+    - "&e/itemstackpapi help&r &7&o( currently viewing )"
+    - "&e/itemstackpapi reload&r &7- reload the plugin"
+    - "&e/itemstackpapi version&r &7- view the plugin version"
