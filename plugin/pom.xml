@@ -24,8 +24,85 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.bwillows.willowsspigot</groupId>
-            <artifactId>willowsspigot</artifactId>
+            <groupId>bwillows</groupId>
+            <artifactId>v1_9_R1</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>bwillows</groupId>
+            <artifactId>v1_9_R2</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>bwillows</groupId>
+            <artifactId>v1_10_R1</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>bwillows</groupId>
+            <artifactId>v1_11_R1</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>bwillows</groupId>
+            <artifactId>v1_12_R1</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>bwillows</groupId>
+            <artifactId>v1_13_R2</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>bwillows</groupId>
+            <artifactId>v1_14_R1</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>bwillows</groupId>
+            <artifactId>v1_15_R1</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <!--
+        <dependency>
+            <groupId>bwillows</groupId>
+            <artifactId>v1_16_R3</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>bwillows</groupId>
+            <artifactId>v1_17_R1</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>bwillows</groupId>
+            <artifactId>v1_18_R2</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>bwillows</groupId>
+            <artifactId>v1_19_R1</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>bwillows</groupId>
+            <artifactId>v1_19_R3</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>bwillows</groupId>
+            <artifactId>v1_20_R1</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>bwillows</groupId>
+            <artifactId>v1_20_R3</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
             <version>1.8.8-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
@@ -46,6 +123,10 @@
         <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/public/</url>
+        </repository>
+        <repository>
+            <id>elmakers</id>
+            <url>https://maven.elmakers.com/repository/</url>
         </repository>
     </repositories>
 
@@ -76,6 +157,23 @@
                                 <includes>
                                     <include>bwillows:common</include>
                                     <include>bwillows:v1_8_R3</include>
+                                    <include>bwillows:v1_9_R1</include>
+                                    <include>bwillows:v1_9_R2</include>
+                                    <include>bwillows:v1_10_R1</include>
+                                    <include>bwillows:v1_11_R1</include>
+                                    <include>bwillows:v1_12_R1</include>
+                                    <include>bwillows:v1_13_R2</include>
+                                    <include>bwillows:v1_14_R1</include>
+                                    <include>bwillows:v1_15_R1</include>
+                                    <!--
+                                    <include>bwillows:v1_16_R3</include>
+                                    <include>bwillows:v1_17_R1</include>
+                                    <include>bwillows:v1_18_R2</include>
+                                    <include>bwillows:v1_19_R1</include>
+                                    <include>bwillows:v1_19_R3</include>
+                                    <include>bwillows:v1_20_R1</include>
+                                    <include>bwillows:v1_20_R3</include>
+                                    -->
                                 </includes>
                             </artifactSet>
                         </configuration>

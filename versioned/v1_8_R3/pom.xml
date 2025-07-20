@@ -13,10 +13,9 @@
     <packaging>jar</packaging>
 
     <dependencies>
-
         <dependency>
-            <groupId>com.bwillows.willowsspigot</groupId>
-            <artifactId>willowsspigot</artifactId>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
             <version>1.8.8-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
@@ -47,6 +46,10 @@
         <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/public/</url>
+        </repository>
+        <repository>
+            <id>elmakers</id>
+            <url>https://maven.elmakers.com/repository/</url>
         </repository>
     </repositories>
 </project>

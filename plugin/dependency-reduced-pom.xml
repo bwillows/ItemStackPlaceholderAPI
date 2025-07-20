@@ -32,6 +32,14 @@
                 <includes>
                   <include>bwillows:common</include>
                   <include>bwillows:v1_8_R3</include>
+                  <include>bwillows:v1_9_R1</include>
+                  <include>bwillows:v1_9_R2</include>
+                  <include>bwillows:v1_10_R1</include>
+                  <include>bwillows:v1_11_R1</include>
+                  <include>bwillows:v1_12_R1</include>
+                  <include>bwillows:v1_13_R2</include>
+                  <include>bwillows:v1_14_R1</include>
+                  <include>bwillows:v1_15_R1</include>
                 </includes>
               </artifactSet>
             </configuration>
@@ -45,11 +53,15 @@
       <id>spigot-repo</id>
       <url>https://hub.spigotmc.org/nexus/content/repositories/public/</url>
     </repository>
+    <repository>
+      <id>elmakers</id>
+      <url>https://maven.elmakers.com/repository/</url>
+    </repository>
   </repositories>
   <dependencies>
     <dependency>
-      <groupId>com.bwillows.willowsspigot</groupId>
-      <artifactId>willowsspigot</artifactId>
+      <groupId>org.spigotmc</groupId>
+      <artifactId>spigot</artifactId>
       <version>1.8.8-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>

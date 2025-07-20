@@ -6,8 +6,8 @@
     <groupId>bwillows</groupId>
     <artifactId>ItemStackPlaceholderAPI</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
 
+    <packaging>pom</packaging>
     <name>ItemStackPlaceholderAPI</name>
 
     <properties>
@@ -15,10 +15,15 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <build>
+        <plugins>
+        </plugins>
+    </build>
+
     <modules>
-        <module>common</module>
-        <module>versioned/v1_8_R3</module>
         <module>plugin</module>
+        <module>common</module>
+        <module>versioned</module>
     </modules>
 
     <repositories>
@@ -50,6 +55,10 @@
         <repository>
             <id>placeholderapi</id>
             <url>https://repo.placeholderapi.me/repo/</url>
+        </repository>
+        <repository>
+            <id>elmakers</id>
+            <url>https://maven.elmakers.com/repository/</url>
         </repository>
     </repositories>
 </project>

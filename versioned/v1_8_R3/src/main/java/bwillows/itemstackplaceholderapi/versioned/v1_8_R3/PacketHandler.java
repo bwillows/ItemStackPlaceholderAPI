@@ -2,7 +2,9 @@ package bwillows.itemstackplaceholderapi.versioned.v1_8_R3;
 
 import bwillows.itemstackplaceholderapi.api.PacketHandlerInterface;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -28,5 +30,10 @@ public class PacketHandler implements PacketHandlerInterface {
             nettyPacketHandler.uninject();
         }
         handlers.remove(uuid);
+    }
+
+    @Override
+    public Collection<UUID> getInjectedPlayers() {
+        return handlers.keySet();
     }
 }
