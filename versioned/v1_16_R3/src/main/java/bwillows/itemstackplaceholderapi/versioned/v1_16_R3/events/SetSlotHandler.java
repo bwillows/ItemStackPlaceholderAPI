@@ -1,4 +1,4 @@
-package bwillows.itemstackplaceholderapi.versioned.v1_17_R1.events;
+package bwillows.itemstackplaceholderapi.versioned.v1_16_R3.events;
 
 import bwillows.itemstackplaceholderapi.api.PlaceholderUtil;
 import net.minecraft.server.v1_16_R3.ItemStack;

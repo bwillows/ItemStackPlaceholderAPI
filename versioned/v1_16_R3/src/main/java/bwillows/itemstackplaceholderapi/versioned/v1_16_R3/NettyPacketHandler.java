@@ -1,8 +1,8 @@
-package bwillows.itemstackplaceholderapi.versioned.v1_17_R1;
+package bwillows.itemstackplaceholderapi.versioned.v1_16_R3;
 
-import bwillows.itemstackplaceholderapi.versioned.v1_17_R1.events.EntityEquipmentHandler;
-import bwillows.itemstackplaceholderapi.versioned.v1_17_R1.events.SetSlotHandler;
-import bwillows.itemstackplaceholderapi.versioned.v1_17_R1.events.WindowItemsHandler;
+import bwillows.itemstackplaceholderapi.versioned.v1_16_R3.events.EntityEquipmentHandler;
+import bwillows.itemstackplaceholderapi.versioned.v1_16_R3.events.SetSlotHandler;
+import bwillows.itemstackplaceholderapi.versioned.v1_16_R3.events.WindowItemsHandler;
 import io.netty.channel.*;
 
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;

@@ -1,76 +1,57 @@
 package bwillows.itemstackplaceholderapi.versioned.v1_17_R1.events;
 
 import bwillows.itemstackplaceholderapi.api.PlaceholderUtil;
-import net.minecraft.server.v1_17_R1.ItemStack;
-import net.minecraft.server.v1_17_R1.Packet;
-import net.minecraft.server.v1_17_R1.PacketPlayOutSetSlot;
+import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.events.PacketContainer;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class SetSlotHandler {
 
-    public static void handle(Packet<?> packet, Player player) {
-        if (!(packet instanceof PacketPlayOutSetSlot)) return;
-
+    public static void handle(PacketEvent event, Player player) {
         try {
-            ItemStack nmsItem = (ItemStack) getField(packet, "c");
+            PacketContainer packet = event.getPacket();
+            ItemStack item = packet.getItemModifier().read(0); // slot item
 
-            if (nmsItem == null || nmsItem.getTag() == null) return;
+            if (item == null) return;
 
-            org.bukkit.inventory.ItemStack bukkitItem = CraftItemStack.asBukkitCopy(nmsItem);
-            ItemMeta meta = bukkitItem.getItemMeta();
+            ItemMeta meta = item.getItemMeta();
+            if (meta == null) return;
 
-            if (meta != null) {
-                boolean modified = false;
+            boolean modified = false;
 
-                if (meta.hasDisplayName()) {
-                    String newName = PlaceholderUtil.parsePlaceholders(player, meta.getDisplayName());
-                    if (!newName.equals(meta.getDisplayName())) {
-                        meta.setDisplayName(newName);
-                        modified = true;
-                    }
-                }
-
-                if (meta.hasLore()) {
-                    List<String> newLore = meta.getLore().stream()
-                            .map(line -> PlaceholderUtil.parsePlaceholders(player, line))
-                            .collect(Collectors.toList());
-
-                    if (!newLore.equals(meta.getLore())) {
-                        meta.setLore(newLore);
-                        modified = true;
-                    }
-                }
-
-                if (modified) {
-                    bukkitItem.setItemMeta(meta);
-                    ItemStack newNms = CraftItemStack.asNMSCopy(bukkitItem);
-                    setField(packet, "c", newNms);
+            if (meta.hasDisplayName()) {
+                String newName = PlaceholderUtil.parsePlaceholders(player, meta.getDisplayName());
+                if (!newName.equals(meta.getDisplayName())) {
+                    meta.setDisplayName(newName);
+                    modified = true;
                 }
             }
 
+            if (meta.hasLore()) {
+                List<String> newLore = meta.getLore().stream()
+                        .map(line -> PlaceholderUtil.parsePlaceholders(player, line))
+                        .collect(Collectors.toList());
+
+                if (!newLore.equals(meta.getLore())) {
+                    meta.setLore(newLore);
+                    modified = true;
+                }
+            }
+
+            if (modified) {
+                item.setItemMeta(meta);
+                packet.getItemModifier().write(0, item); // update the modified item back into the packet
+            }
+
         } catch (Exception e) {
-            Bukkit.getLogger().severe("[ItemStackPlaceholderAPI] Failed to handle PacketPlayOutSetSlot");
+            Bukkit.getLogger().severe("[ItemStackPlaceholderAPI] Failed to handle SET_SLOT packet");
             e.printStackTrace();
         }
-    }
-
-    private static Object getField(Object packet, String fieldName) throws Exception {
-        Field field = packet.getClass().getDeclaredField(fieldName);
-        field.setAccessible(true);
-        return field.get(packet);
-    }
-
-    private static void setField(Object packet, String fieldName, Object value) throws Exception {
-        Field field = packet.getClass().getDeclaredField(fieldName);
-        field.setAccessible(true);
-        field.set(packet, value);
     }
 }

@@ -1,4 +1,4 @@
-package bwillows.itemstackplaceholderapi.versioned.v1_17_R1;
+package bwillows.itemstackplaceholderapi.versioned.v1_16_R3;
 
 import bwillows.itemstackplaceholderapi.api.PacketHandlerInterface;
 

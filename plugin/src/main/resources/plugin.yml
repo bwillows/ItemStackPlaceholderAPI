@@ -5,6 +5,8 @@ api-version: 1.13
 authors: [bwillows]
 depend:
   - PlaceholderAPI
+softdepend:
+  - ProtocolLib
 description: Versioned NMS placeholder injector
 commands:
   itemstackplaceholderapi:
