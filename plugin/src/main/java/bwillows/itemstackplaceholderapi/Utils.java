@@ -1,6 +1,7 @@
 package bwillows.itemstackplaceholderapi;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 
 import java.util.HashMap;
 import java.util.Map;

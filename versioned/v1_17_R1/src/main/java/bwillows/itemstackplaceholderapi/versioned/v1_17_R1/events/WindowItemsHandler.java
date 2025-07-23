@@ -1,36 +1,46 @@
 package bwillows.itemstackplaceholderapi.versioned.v1_17_R1.events;
 
 import bwillows.itemstackplaceholderapi.api.PlaceholderUtil;
-import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.events.PacketContainer;
+import net.minecraft.world.item.ItemStack;
 import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class WindowItemsHandler {
-
-    public static void handle(PacketEvent event, Player player) {
+    public static void handle(Object packet, Player viewer) {
         try {
-            PacketContainer packet = event.getPacket();
 
-            List<ItemStack> items = packet.getItemListModifier().read(0);
+            Method cMethod = packet.getClass().getDeclaredMethod("c");
+            cMethod.setAccessible(true); // if method is private or protected
+            List<ItemStack> itemList = (List<ItemStack>)cMethod.invoke(packet);
+
             boolean modified = false;
 
-            for (int i = 0; i < items.size(); i++) {
-                ItemStack item = items.get(i);
-                if (item == null) continue;
+            for(ItemStack nmsItem : itemList) {
+                if (nmsItem == null) continue;
 
-                ItemMeta meta = item.getItemMeta();
+                Method getTag = nmsItem.getClass().getDeclaredMethod("getTag");
+                getTag.setAccessible(true);
+                Object tag = getTag.invoke(nmsItem);
+
+                if(tag == null) continue;
+
+                nmsItem = nmsItem.cloneItemStack();
+                org.bukkit.inventory.ItemStack bukkitItem = CraftItemStack.asBukkitCopy(nmsItem);
+                ItemMeta meta = bukkitItem.getItemMeta();
+
                 if (meta == null) continue;
 
                 boolean itemChanged = false;
 
                 if (meta.hasDisplayName()) {
-                    String updated = PlaceholderUtil.parsePlaceholders(player, meta.getDisplayName());
+                    String updated = PlaceholderUtil.parsePlaceholders(viewer, meta.getDisplayName());
                     if (!updated.equals(meta.getDisplayName())) {
                         meta.setDisplayName(updated);
                         itemChanged = true;
@@ -39,8 +49,9 @@ public class WindowItemsHandler {
 
                 if (meta.hasLore()) {
                     List<String> updatedLore = meta.getLore().stream()
-                            .map(line -> PlaceholderUtil.parsePlaceholders(player, line))
+                            .map(line -> PlaceholderUtil.parsePlaceholders(viewer, line))
                             .collect(Collectors.toList());
+
                     if (!updatedLore.equals(meta.getLore())) {
                         meta.setLore(updatedLore);
                         itemChanged = true;
@@ -48,19 +59,32 @@ public class WindowItemsHandler {
                 }
 
                 if (itemChanged) {
-                    item.setItemMeta(meta);
-                    items.set(i, item);
+                    bukkitItem.setItemMeta(meta);
+                    nmsItem = CraftItemStack.asNMSCopy(bukkitItem);
                     modified = true;
                 }
             }
 
+
             if (modified) {
-                packet.getItemListModifier().write(0, items);
+                setField(packet, "c", itemList);
             }
 
         } catch (Exception e) {
-            Bukkit.getLogger().warning("[ItemStackPlaceholderAPI] Failed to handle WINDOW_ITEMS packet");
+            Bukkit.getLogger().warning("[ItemStackPlaceholderAPI] Failed to handle PacketPlayOutWindowItems");
             e.printStackTrace();
         }
+    }
+
+    private static Object getField(Object packet, String fieldName) throws Exception {
+        Field field = packet.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        return field.get(packet);
+    }
+
+    private static void setField(Object packet, String fieldName, Object value) throws Exception {
+        Field field = packet.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(packet, value);
     }
 }

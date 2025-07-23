@@ -1,39 +1,63 @@
 package bwillows.itemstackplaceholderapi.versioned.v1_17_R1.events;
 
 import bwillows.itemstackplaceholderapi.api.PlaceholderUtil;
-import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.wrappers.EnumWrappers.ItemSlot;
-import com.comphenix.protocol.wrappers.Pair;
+import net.minecraft.world.item.ItemStack;
 import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class EntityEquipmentHandler {
+    public static void handle(Object packet, Player viewer) {
 
-    public static void handle(PacketEvent event, Player viewer) {
         try {
-            List<Pair<ItemSlot, ItemStack>> list = event.getPacket().getSlotStackPairLists().read(0);
+            boolean listChanged = false;
+
+            Method cMethod = packet.getClass().getDeclaredMethod("c");
+            cMethod.setAccessible(true); // if method is private or protected
+
+            // List<Pair<EnumItemSlot, net.minecraft.world.item.ItemStack>>
+            List<Object> list = (List<Object>) cMethod.invoke(packet);
 
             for (int i = 0; i < list.size(); i++) {
-                Pair<ItemSlot, ItemStack> pair = list.get(i);
-                ItemStack item = pair.getSecond();
+                Object pair = list.get(i);
 
-                if (item == null) continue;
+                Method getFirst = pair.getClass().getMethod("getFirst");
+                Method getSecond = pair.getClass().getMethod("getSecond");
 
-                ItemMeta meta = item.getItemMeta();
+                Object enumItemSlot = getFirst.invoke(pair);
+                Object nmsItem = getSecond.invoke(pair);
+
+                if (!(nmsItem instanceof ItemStack)) continue;
+                ItemStack item = (ItemStack) nmsItem;
+
+                item = item.cloneItemStack();
+
+                Method getTag = item.getClass().getDeclaredMethod("getTag");
+                getTag.setAccessible(true);
+                Object tag = getTag.invoke(item);
+
+                if(tag == null)
+                    return;
+
+                org.bukkit.inventory.ItemStack bukkitItem = CraftItemStack.asBukkitCopy(item);
+                ItemMeta meta = bukkitItem.getItemMeta();
                 if (meta == null) continue;
 
-                boolean changed = false;
+                boolean itemChanged = false;
 
                 if (meta.hasDisplayName()) {
                     String updated = PlaceholderUtil.parsePlaceholders(viewer, meta.getDisplayName());
                     if (!updated.equals(meta.getDisplayName())) {
                         meta.setDisplayName(updated);
-                        changed = true;
+                        itemChanged = true;
+                        listChanged = true;
                     }
                 }
 
@@ -43,20 +67,39 @@ public class EntityEquipmentHandler {
                             .collect(Collectors.toList());
                     if (!updatedLore.equals(meta.getLore())) {
                         meta.setLore(updatedLore);
-                        changed = true;
+                        itemChanged = true;
+                        listChanged = true;
                     }
                 }
 
-                if (changed) {
-                    item.setItemMeta(meta);
-                    Pair<ItemSlot, ItemStack> newPair = new Pair<>(pair.getFirst(), item);
+                if (itemChanged) {
+                    bukkitItem.setItemMeta(meta);
+                    ItemStack updatedNmsItem = CraftItemStack.asNMSCopy(bukkitItem);
+
+                    Constructor<?> pairCtor = pair.getClass().getConstructor(Object.class, Object.class);
+                    Object newPair = pairCtor.newInstance(enumItemSlot, updatedNmsItem);
+
                     list.set(i, newPair);
                 }
             }
-
+            if (listChanged) {
+                setField(packet, "c", list);
+            }
         } catch (Exception e) {
-            Bukkit.getLogger().warning("[ItemStackPlaceholderAPI] Failed to handle ENTITY_EQUIPMENT packet");
+            Bukkit.getLogger().severe("[ItemStackPlaceholderAPI] Failed to handle PacketPlayOutEntityEquipment");
             e.printStackTrace();
         }
+    }
+
+    private static Object getField(Object packet, String fieldName) throws Exception {
+        Field field = packet.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        return field.get(packet);
+    }
+
+    private static void setField(Object packet, String fieldName, Object value) throws Exception {
+        Field field = packet.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(packet, value);
     }
 }
